@@ -10,7 +10,7 @@ public class Office {
         this.name = name;
 
         for (int i = 0; i < roomNumber; i++ ) {
-            rooms.add(new TrainingRoom());
+            rooms.add(new TrainingRoom(RoomSize.LARGE));
         }
     }
 

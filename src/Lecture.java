@@ -1,13 +1,17 @@
 public class Lecture {
     private String id;
     private String name;
-    private int period;
+    private LectureElement[] lectureDay;
     private Day startDay;
 
     Lecture(String id, String name, int period) {
         this.name = name;
         this.id = id;
-        this.period = period;
+
+        lectureDay = new LectureElement[period];
+        for (int i = 0; i < period; i++ ) {
+            lectureDay[i] = new LectureElement();
+        }
     }
 
     String getId() {
@@ -19,7 +23,7 @@ public class Lecture {
     }
 
     int getPeriod() {
-        return period;
+        return lectureDay.length;
     }
 
     Day getStartDay() {

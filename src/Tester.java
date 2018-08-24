@@ -23,43 +23,14 @@ import static java.time.DayOfWeek.SUNDAY;
 
 
 class Tester {
-
     public static void main(String... args) {
+        if (args.length > 0) {
+            Configuration.setYear(Integer.parseInt(args[0]));
+        }
 
-        // 指定日(エイプリルフール)
+        LectureAssignManager lam = new LectureAssignManager();
+        lam.run();
 
-        MonthDay aprilFool = MonthDay.of(APRIL, 1);
-
-        // 今年
-
-        int thisYear = 2015;
-
-        // 土曜日と日曜日は休日の設定
-
-        List<DayOfWeek> dayOff = asList(SATURDAY, SUNDAY);
-
-
-
-        // 今後 30 年間について調べる
-
-        IntStream.range(0, 30)
-
-                .mapToObj(i -> Year.of(thisYear + i))
-
-
-
-                // 指定日が休日かどうか
-
-                .map(year -> year.atMonthDay(aprilFool))
-
-                .filter(day -> dayOff.contains(day.getDayOfWeek()))
-
-
-
-                .map(LocalDate::getYear)
-
-                .forEach(System.out::println);
-
+        lam.runAssign();
     }
-
 }

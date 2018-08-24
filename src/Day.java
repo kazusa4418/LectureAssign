@@ -37,10 +37,18 @@ public class Day {
     }
 
     public Day next() {
-        return month.getCalendar().nextDay(this);
+        return month.getCalendar().nextDay(this, 1);
+    }
+
+    public Day next(int num) {
+        return month.getCalendar().nextDay(this, num);
     }
 
     public Day before() {
-        return month.getCalendar().beforeDay(this);
+        return month.getCalendar().beforeDay(this, 1);
+    }
+
+    public Day before(int num) {
+        return month.getCalendar().beforeDay(this, num);
     }
 }

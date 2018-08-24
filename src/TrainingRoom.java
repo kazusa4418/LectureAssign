@@ -4,7 +4,9 @@ import java.util.Map;
 public class TrainingRoom {
     private Map<Month, Map<Day, Lecture>> map = new HashMap<>();
 
-    public TrainingRoom() {
+    private RoomSize size;
+
+    public TrainingRoom(RoomSize size) {
         Calendar calendar = Calendar.getInstance();
         Month[] months = calendar.getMonthList();
 
@@ -16,6 +18,8 @@ public class TrainingRoom {
             }
             map.put(month, dayMap);
         }
+
+        this.size = size;
     }
 
     public void setLecture(Day day, Lecture lecture) {
@@ -30,6 +34,10 @@ public class TrainingRoom {
         Map<Day, Lecture> dayMap = map.get(month);
 
         for (Day d : dayMap.keySet()) {
+            if (dayMap.get(d) == null) {
+                continue;
+            }
+
             if (lecture.equals(dayMap.get(d)) && dayMap.get(d).getStartDay().getMonth() == month) {
                 count++;
             }
@@ -45,6 +53,10 @@ public class TrainingRoom {
             Map<Day, Lecture> dayMap = map.get(month);
 
             for (Day d : dayMap.keySet()) {
+                if (dayMap.get(d) == null) {
+                    continue;
+                }
+
                 if (lecture.equals(dayMap.get(d))) {
                     count++;
                 }
@@ -52,5 +64,18 @@ public class TrainingRoom {
         }
         assert count % lecture.getPeriod() == 0;
         return count / lecture.getPeriod();
+    }
+
+    public Lecture getLecture(Day day) {
+        return map.get(day.getMonth()).get(day);
+    }
+
+    public RoomSize size() {
+        return size;
+    }
+
+    public void assign(Day day, Lecture lecture) {
+        Map<Day, Lecture> dayMap = map.get(day.getMonth());
+        dayMap.put(day, lecture);
     }
 }

@@ -60,6 +60,13 @@ public class Calendar {
         throw new IllegalArgumentException("argument does not exist.");
     }
 
+    Day nextDay(Day day, int num) {
+        for (int i = 0; i < num; i++ ) {
+            day = nextDay(day);
+        }
+        return day;
+    }
+
     Day beforeDay(Day day) {
         checkInclude(day);
 
@@ -79,6 +86,13 @@ public class Calendar {
             }
         }
         throw new AssertionError();
+    }
+
+    Day beforeDay(Day day, int num) {
+        for (int i = 0; i < num; i++ ) {
+            day = beforeDay(day);
+        }
+        return day;
     }
 
     Month nextMonth(Month month) {

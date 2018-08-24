@@ -1,4 +1,5 @@
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -52,7 +53,7 @@ public class Configuration {
                 continue;
             }
 
-            try (Reader reader = new InputStreamReader(new FileInputStream(f), "SHIFT-JIS")) {
+            try (Reader reader = new InputStreamReader(new FileInputStream(f), StandardCharsets.UTF_8)) {
                 Properties properties = new Properties();
                 properties.load(reader);
 
@@ -89,11 +90,21 @@ public class Configuration {
 
                 String lectureId = properties.getProperty("lectureId", "empty");
                 String lectureName = properties.getProperty("lectureName", "empty");
-                String period = properties.getProperty("period", "1");
+                int period = Integer.parseInt(properties.getProperty("period", "1"));
                 int holdingTimes = Integer.parseInt(properties.getProperty("holdingTimes", "0"));
+                RoomSize size = RoomSize.get(properties.getProperty("roomSize", "small"));
 
                 for (int i = 0; i < holdingTimes; i++ ) {
-                    lectures.add(new Lecture(lectureId, lectureName, Integer.parseInt(period)));
+                    Lecture lecture;
+
+                    if (size == RoomSize.LARGE) {
+                        lecture = new LargeLecture(lectureId, lectureName, period);
+                    }
+                    else {
+                        lecture = new SmallLecture(lectureId, lectureName, period);
+                    }
+
+                    lectures.add(lecture);
                 }
             }
             catch (IOException | NumberFormatException err) {
