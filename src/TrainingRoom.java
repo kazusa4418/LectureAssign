@@ -76,6 +76,20 @@ public class TrainingRoom {
 
     public void assign(Day day, Lecture lecture) {
         Map<Day, Lecture> dayMap = map.get(day.getMonth());
+        lecture.setStartDay(day);
         dayMap.put(day, lecture);
+    }
+
+    public void showPlans() {
+        for (Month month : map.keySet()) {
+            Map<Day, Lecture> dayMap = map.get(month);
+
+            for (Day day : dayMap.keySet()) {
+                if (dayMap.get(day) == null) {
+                    continue;
+                }
+                System.out.println(day + " " + dayMap.get(day));
+            }
+        }
     }
 }

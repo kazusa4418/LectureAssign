@@ -25,6 +25,14 @@ public class LectureAssignManager {
         }
     }
 
+    public void show() {
+        for (Office office : offices) {
+            for (TrainingRoom room : office.getTrainingRoomList()) {
+                room.showPlans();
+            }
+        }
+    }
+
     public void runAssign() {
         for (Lecture lecture : lectures) {
             if (lecture instanceof LargeLecture) {
@@ -37,7 +45,7 @@ public class LectureAssignManager {
         }
     }
 
-    void assign(LargeLecture lecture) {
+    private void assign(LargeLecture lecture) {
         Office office = select(offices);
 
         Month month = select(getLeastAssignedMonth(office, lecture));

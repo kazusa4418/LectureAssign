@@ -84,7 +84,7 @@ public class Configuration {
                 continue;
             }
 
-            try (Reader reader = new InputStreamReader(new FileInputStream(f), "SHIFT-JIS")) {
+            try (Reader reader = new InputStreamReader(new FileInputStream(f), StandardCharsets.UTF_8)) {
                 Properties properties = new Properties();
                 properties.load(reader);
 

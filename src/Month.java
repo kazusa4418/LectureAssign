@@ -77,4 +77,8 @@ public class Month {
     public Calendar getCalendar() {
         return calendar;
     }
+
+    public String toString() {
+        return month + "月";
+    }
 }

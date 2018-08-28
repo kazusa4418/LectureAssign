@@ -25,7 +25,7 @@ public class Day {
     }
 
     public String toString() {
-        return day + " " + (isHoliday || dayOfWeek.isDayOff() ? "休日" : "平日") + " " + dayOfWeek;
+        return month +""+ day + "日 " + (isHoliday || dayOfWeek.isDayOff() ? "休日" : "平日") + " " + dayOfWeek;
     }
 
     public Month getMonth() {

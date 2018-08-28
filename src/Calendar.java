@@ -77,7 +77,7 @@ public class Calendar {
             if (day != days[i]) {
                 continue;
             }
-            if (--i < 0) {
+            if (--i > 0) {
                 return days[i];
             }
             else {
