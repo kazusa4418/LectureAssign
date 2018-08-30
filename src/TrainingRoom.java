@@ -2,16 +2,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TrainingRoom {
-    private Map<Month, Map<Day, Lecture>> map = new HashMap<>();
+    private Office office;
+    private int no;
+    private Map<Month, Map<Day, LectureElement>> map = new HashMap<>();
 
     private RoomSize size;
 
-    public TrainingRoom(RoomSize size) {
+    public TrainingRoom(Office office, int no, RoomSize size) {
+        this.office = office;
+        this.no = no;
         Calendar calendar = Calendar.getInstance();
         Month[] months = calendar.getMonthList();
 
         for (Month month : months) {
-            Map<Day, Lecture> dayMap = new HashMap<>();
+            Map<Day, LectureElement> dayMap = new HashMap<>();
 
             for (Day day : month.getDayList()) {
                 dayMap.put(day, null);
@@ -22,23 +26,18 @@ public class TrainingRoom {
         this.size = size;
     }
 
-    public void setLecture(Day day, Lecture lecture) {
-        Month month = day.getMonth();
-        Map<Day, Lecture> dayMap = map.get(month);
-        dayMap.put(day, lecture);
-    }
-
     public int count(Month month, Lecture lecture) {
         int count = 0;
 
-        Map<Day, Lecture> dayMap = map.get(month);
+        Map<Day, LectureElement> dayMap = map.get(month);
 
         for (Day d : dayMap.keySet()) {
             if (dayMap.get(d) == null) {
                 continue;
             }
 
-            if (lecture.equals(dayMap.get(d)) && dayMap.get(d).getStartDay().getMonth() == month) {
+            LectureElement element = dayMap.get(d);
+            if (lecture.equals(element.getLecture()) && element.getLecture().getStartDay().getMonth() == month) {
                 count++;
             }
         }
@@ -50,7 +49,7 @@ public class TrainingRoom {
     public int count(Lecture lecture) {
         int count = 0;
         for (Month month : map.keySet()) {
-            Map<Day, Lecture> dayMap = map.get(month);
+            Map<Day, LectureElement> dayMap = map.get(month);
 
             for (Day d : dayMap.keySet()) {
                 if (dayMap.get(d) == null) {
@@ -67,7 +66,8 @@ public class TrainingRoom {
     }
 
     public Lecture getLecture(Day day) {
-        return map.get(day.getMonth()).get(day);
+        LectureElement element = map.get(day.getMonth()).get(day);
+        return element != null ? element.getLecture() : null;
     }
 
     public RoomSize size() {
@@ -75,14 +75,18 @@ public class TrainingRoom {
     }
 
     public void assign(Day day, Lecture lecture) {
-        Map<Day, Lecture> dayMap = map.get(day.getMonth());
+        Map<Day, LectureElement> dayMap = map.get(day.getMonth());
+
         lecture.setStartDay(day);
-        dayMap.put(day, lecture);
+        for (LectureElement element : lecture.getElements()) {
+            dayMap.put(day, element);
+            day = day.next();
+        }
     }
 
     public void showPlans() {
         for (Month month : map.keySet()) {
-            Map<Day, Lecture> dayMap = map.get(month);
+            Map<Day, LectureElement> dayMap = map.get(month);
 
             for (Day day : dayMap.keySet()) {
                 if (dayMap.get(day) == null) {
@@ -91,5 +95,9 @@ public class TrainingRoom {
                 System.out.println(day + " " + dayMap.get(day));
             }
         }
+    }
+
+    public String toString() {
+        return office + " 研修室" + no;
     }
 }

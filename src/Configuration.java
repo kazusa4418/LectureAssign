@@ -1,9 +1,7 @@
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.Calendar;
-import java.util.List;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,9 +56,13 @@ public class Configuration {
                 properties.load(reader);
 
                 String officeName = properties.getProperty("officeName", "empty");
-                String roomNumber = properties.getProperty("roomNumber", "1");
 
-                Office office = new Office(officeName, Integer.parseInt(roomNumber));
+                String rooms  = properties.getProperty("rooms", "small");
+
+                String[] arrayRooms = rooms.split(" ");
+                RoomSize[] sizes = Arrays.stream(arrayRooms).map(RoomSize::get).toArray(RoomSize[]::new);
+
+                Office office = new Office(officeName, sizes);
                 offices.add(office);
             }
             catch (IOException | NumberFormatException err) {

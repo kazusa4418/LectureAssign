@@ -37,7 +37,12 @@ public class Day {
     }
 
     public Day next() {
-        return month.getCalendar().nextDay(this, 1);
+        try {
+            return month.getCalendar().nextDay(this, 1);
+        }
+        catch (ArrayIndexOutOfBoundsException err) {
+            throw new DayNotFoundException();
+        }
     }
 
     public Day next(int num) {

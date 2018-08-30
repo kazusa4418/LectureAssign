@@ -26,9 +26,11 @@ public class LectureAssignManager {
     }
 
     public void show() {
-        for (Office office : offices) {
-            for (TrainingRoom room : office.getTrainingRoomList()) {
-                room.showPlans();
+        for (int i = 0; i < offices.length; i++ ) {
+            TrainingRoom[] rooms = offices[i].getTrainingRoomList();
+            for (int j = 0; j < rooms.length; j++ ) {
+                System.out.println(rooms[j]);
+                rooms[j].showPlans();
             }
         }
     }
@@ -53,6 +55,8 @@ public class LectureAssignManager {
         assignLecture(office, month, lecture);
 
     }
+
+    //TODO: プロパティにオフィスごとの重みづけはされているのでそれに従ってオフィスを取得するメソッドを作成する
 
     private <E> E select(E[] array) {
         Random random = new Random();
@@ -88,30 +92,22 @@ public class LectureAssignManager {
 
         Day[] mondays = month.getDays(DayOfWeek.MONDAY);
 
-        Predicate<Day> pre = (day) -> {
-            for (TrainingRoom room : rooms) {
-                if (canAssign(room, day, lecture)) {
-                    return true;
-                }
-            }
-            return false;
-        };
-
         // 取得してきた月曜日のうち割当可能な日のみassignablesに入れる
         List<Day> assignableDays = new ArrayList<>();
         for (Day monday : mondays) {
-            if (pre.test(monday)) {
+            if (canAssign(rooms, monday, lecture)) {
                 assignableDays.add(monday);
             }
         }
 
+        //TODO: アサインできる日が存在しなかった場合の処理を実装する
         // assignableからランダムに割り当てる日を決める
         Day assignedDay = select(assignableDays);
 
         // assignedDayにlectureを割り当てることのできる研修室を取得する
         List<TrainingRoom> assignableRooms = new ArrayList<>();
         for (TrainingRoom room : rooms) {
-            if (canAssign(room, assignedDay, lecture)) {
+            if (canAssign(room, assignedDay)) {
                 assignableRooms.add(room);
             }
         }
@@ -121,32 +117,64 @@ public class LectureAssignManager {
 
         // 割り当てる
         assignedRoom.assign(assignedDay, lecture);
-
     }
 
-    private boolean canAssign(TrainingRoom room, Day day, LargeLecture lecture) {
-        // 今週の月~金のすべてで研修がなく祝日が含まれていないか確かめる
+    private boolean canAssign(TrainingRoom[] rooms, Day day, LargeLecture lecture) {
+        // 月~金のすべてで研修がなく祝日が含まれていない研修室があるか確かめる
+
+        boolean flag1 = false;
+
+        loop:
+        for (TrainingRoom room : rooms) {
+            Day d = day;
+
+            for (int i = 0; i < 5; i++) {
+                if (room.getLecture(day) != null || d.isHoliday()) {
+                    continue loop;
+                }
+                try {
+                    d = d.next();
+                } catch (DayNotFoundException err) {
+                    // その週に休日・祝日があるかわからないのであれば検討する意味はない
+                    return false;
+                }
+            }
+            flag1 = true;
+            break;
+        }
+
+        boolean flag2 = true;
+
+        for (TrainingRoom room : rooms) {
+            Day d = day;
+            // 先週に同じ講義が割り当てられていないか確かめる
+            d = day.before(7);
+            if (LectureUtils.equals(room.getLecture(d), (lecture))) {
+                flag2 = false;
+            }
+
+            // 来週に同じ講義が割り当てられていないか確かめる
+            d = day.next(7);
+            if (LectureUtils.equals(room.getLecture(d), (lecture))) {
+                flag2 = false;
+            }
+        }
+        return flag1 && flag2;
+    }
+
+    private boolean canAssign(TrainingRoom room, Day day) {
         Day d = day;
-        for (int i = 0; i < 5; i++ ) {
+
+        for (int i = 0; i < 5; i++) {
             if (room.getLecture(day) != null || d.isHoliday()) {
                 return false;
             }
-            d = d.next();
+            try {
+                d = d.next();
+            } catch (DayNotFoundException err) {
+                return false;
+            }
         }
-
-        // 先週に同じ講義が割り当てられていないか確かめる
-        d = day.before(7);
-        if (LectureUtils.equals(room.getLecture(d), (lecture))) {
-            return false;
-        }
-
-        // 来週に同じ講義が割り当てられていないか確かめる
-        d = day.next(7);
-        if (LectureUtils.equals(room.getLecture(d), (lecture))) {
-            return false;
-        }
-
-        // 上記のすべての条件を満たさなかったらその研修室で講義を行える
         return true;
     }
 }

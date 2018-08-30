@@ -6,11 +6,11 @@ public class Office {
 
     private List<TrainingRoom> rooms = new ArrayList<>();
 
-    Office(String name, int roomNumber) {
+    Office(String name, RoomSize[] sizes) {
         this.name = name;
 
-        for (int i = 0; i < roomNumber; i++ ) {
-            rooms.add(new TrainingRoom(RoomSize.LARGE));
+        for (int i = 0; i < sizes.length; i++ ) {
+            rooms.add(new TrainingRoom(this, i + 1, sizes[i]));
         }
     }
 
@@ -19,7 +19,7 @@ public class Office {
     }
 
     TrainingRoom[] getTrainingRoomList() {
-        return rooms.toArray(new TrainingRoom[rooms.size()]);
+        return rooms.toArray(new TrainingRoom[0]);
     }
 
     int inquire(Month month, Lecture lecture) {
@@ -39,5 +39,9 @@ public class Office {
         }
         assert count % lecture.getPeriod() == 0;
         return count / lecture.getPeriod();
+    }
+
+    public String toString() {
+        return name;
     }
 }
