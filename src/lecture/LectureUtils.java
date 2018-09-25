@@ -1,3 +1,5 @@
+package lecture;
+
 public class LectureUtils {
     public static boolean equals(Lecture l1, Lecture l2) {
         if (l1 == null && l2 == null) {

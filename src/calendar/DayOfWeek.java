@@ -1,3 +1,5 @@
+package calendar;
+
 public enum DayOfWeek {
     SUNDAY,
     MONDAY,

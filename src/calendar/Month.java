@@ -1,3 +1,7 @@
+package calendar;
+
+import lecture.Lecture;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +12,11 @@ public class Month {
     private int month;
     private List<Day> days;
 
-    public Month(int year, int month, Calendar calendar) {
+
+    private int year;
+
+    Month(int year, int month, Calendar calendar) {
+        this.year = year;
         this.calendar = calendar;
         this.month = month;
 
@@ -43,7 +51,7 @@ public class Month {
     }
 
         public Day[] getDayList() {
-        return days.toArray(new Day[days.size()]);
+        return days.toArray(new Day[0]);
     }
 
     public Day[] getDays(DayOfWeek dayOfWeek) {
@@ -53,14 +61,18 @@ public class Month {
                 list.add(day);
             }
         }
-        return list.toArray(new Day[list.size()]);
+        return list.toArray(new Day[0]);
+    }
+
+    public Day getLastDay() {
+        return days.get(days.size() -1);
     }
 
     public int count(Lecture lecture) {
 //        int count = 0;
 //
-//        for (Day day : days) {
-//            Lecture scheduled = day.getLecture();
+//        for (calendar.Day day : days) {
+//            lecture.Lecture scheduled = day.getLecture();
 //
 //            if (lecture.equals(scheduled)) {
 //                count++;
@@ -79,6 +91,6 @@ public class Month {
     }
 
     public String toString() {
-        return month + "月";
+        return month + "月" + year;
     }
 }

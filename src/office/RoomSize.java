@@ -1,3 +1,5 @@
+package office;
+
 public enum RoomSize {
     LARGE,
     SMALL;

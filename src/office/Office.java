@@ -1,3 +1,8 @@
+package office;
+
+import calendar.Month;
+import lecture.Lecture;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -6,7 +11,7 @@ public class Office {
 
     private List<TrainingRoom> rooms = new ArrayList<>();
 
-    Office(String name, RoomSize[] sizes) {
+    public Office(String name, RoomSize[] sizes) {
         this.name = name;
 
         for (int i = 0; i < sizes.length; i++ ) {
@@ -14,15 +19,15 @@ public class Office {
         }
     }
 
-    String getOfficeName() {
+    public String getOfficeName() {
         return name;
     }
 
-    TrainingRoom[] getTrainingRoomList() {
+    public TrainingRoom[] getTrainingRoomList() {
         return rooms.toArray(new TrainingRoom[0]);
     }
 
-    int inquire(Month month, Lecture lecture) {
+    public int inquire(Month month, Lecture lecture) {
         int count = 0;
 
         for (TrainingRoom room : rooms) {

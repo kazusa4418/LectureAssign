@@ -1,3 +1,13 @@
+package office;
+
+import calendar.Calendar;
+import calendar.Day;
+import calendar.DayNotFoundException;
+import calendar.Month;
+import lecture.Lecture;
+import lecture.LectureElement;
+import office.Office;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,7 +66,7 @@ public class TrainingRoom {
                     continue;
                 }
 
-                if (lecture.equals(dayMap.get(d))) {
+                if (lecture.equals(dayMap.get(d).getLecture())) {
                     count++;
                 }
             }
@@ -74,7 +84,7 @@ public class TrainingRoom {
         return size;
     }
 
-    public void assign(Day day, Lecture lecture) {
+    public void assign(Day day, Lecture lecture) throws DayNotFoundException {
         Map<Day, LectureElement> dayMap = map.get(day.getMonth());
 
         lecture.setStartDay(day);

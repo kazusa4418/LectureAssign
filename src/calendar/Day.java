@@ -1,3 +1,5 @@
+package calendar;
+
 public class Day {
     /* 所属してる月 */
     private Month month;
@@ -20,12 +22,16 @@ public class Day {
         this.isHoliday = isHoliday;
     }
 
+    public int getInt() {
+        return day;
+    }
+
     public boolean isHoliday() {
         return isHoliday || dayOfWeek.isDayOff();
     }
 
     public String toString() {
-        return month +""+ day + "日 " + (isHoliday || dayOfWeek.isDayOff() ? "休日" : "平日") + " " + dayOfWeek;
+        return month +", "+ day + "日 " + (isHoliday || dayOfWeek.isDayOff() ? "休日" : "平日") + " " + dayOfWeek;
     }
 
     public Month getMonth() {
@@ -36,24 +42,19 @@ public class Day {
         return this.dayOfWeek == dayOfWeek;
     }
 
-    public Day next() {
-        try {
-            return month.getCalendar().nextDay(this, 1);
-        }
-        catch (ArrayIndexOutOfBoundsException err) {
-            throw new DayNotFoundException();
-        }
+    public Day next() throws DayNotFoundException {
+        return month.getCalendar().nextDay(this, 1);
     }
 
-    public Day next(int num) {
+    public Day next(int num) throws DayNotFoundException {
         return month.getCalendar().nextDay(this, num);
     }
 
-    public Day before() {
+    public Day before() throws DayNotFoundException {
         return month.getCalendar().beforeDay(this, 1);
     }
 
-    public Day before(int num) {
+    public Day before(int num) throws DayNotFoundException {
         return month.getCalendar().beforeDay(this, num);
     }
 }

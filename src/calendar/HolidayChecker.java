@@ -1,3 +1,7 @@
+package calendar;
+
+import calendar.DayOfWeek;
+
 public class HolidayChecker {
     public static boolean check(int month, int day, DayOfWeek dayOfWeek) {
         // 元日

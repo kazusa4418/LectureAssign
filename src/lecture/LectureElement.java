@@ -1,3 +1,5 @@
+package lecture;
+
 public class LectureElement {
     private Lecture lecture;
 
@@ -5,7 +7,7 @@ public class LectureElement {
         this.lecture = lecture;
     }
 
-    Lecture getLecture() {
+    public Lecture getLecture() {
         return lecture;
     }
 

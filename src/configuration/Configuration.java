@@ -1,3 +1,14 @@
+package configuration;
+
+import lecture.LargeLecture;
+import lecture.Lecture;
+import lecture.LectureList;
+import lecture.SmallLecture;
+import office.Office;
+import office.OfficeList;
+import office.RoomSize;
+import util.LoggerProvider;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -7,8 +18,8 @@ import java.util.logging.Logger;
 
 public class Configuration {
     private static int calendarYear = Calendar.getInstance().get(Calendar.YEAR);
-    private static List<Office> offices = new ArrayList<>();
-    private static List<Lecture> lectures = new ArrayList<>();
+    private static OfficeList offices = new OfficeList();
+    private static LectureList lectures = new LectureList();
 
     private static Logger logger = LoggerProvider.getSimpleFormatLogger("configuration", "./");
 
@@ -24,11 +35,11 @@ public class Configuration {
     }
 
     public static Office[] getOffices() {
-        return offices.toArray(new Office[offices.size()]);
+        return offices.toArray();
     }
 
     public static Lecture[] getLectures() {
-        return lectures.toArray(new Lecture[lectures.size()]);
+        return lectures.toArray();
     }
 
     private static void readProperties() {
@@ -96,14 +107,16 @@ public class Configuration {
                 int holdingTimes = Integer.parseInt(properties.getProperty("holdingTimes", "0"));
                 RoomSize size = RoomSize.get(properties.getProperty("roomSize", "small"));
 
+                HashMap<Office, Integer> office_weighting = toMap(properties.getProperty("office", null));
+
                 for (int i = 0; i < holdingTimes; i++ ) {
                     Lecture lecture;
 
                     if (size == RoomSize.LARGE) {
-                        lecture = new LargeLecture(lectureId, lectureName, period);
+                        lecture = new LargeLecture(lectureId, lectureName, period, office_weighting);
                     }
                     else {
-                        lecture = new SmallLecture(lectureId, lectureName, period);
+                        lecture = new SmallLecture(lectureId, lectureName, period, office_weighting);
                     }
 
                     lectures.add(lecture);
@@ -113,5 +126,15 @@ public class Configuration {
                 logger.log(Level.SEVERE, err.toString());
             }
         }
+    }
+
+    private static HashMap<Office, Integer> toMap(String s) {
+        HashMap<Office, Integer> map = new HashMap<>();
+        String[] ss = s.split(" ");
+
+        for (int i = 0; i < ss.length; i += 2) {
+            map.put(offices.get(ss[i]), Integer.parseInt(ss[i + 1]));
+        }
+        return map;
     }
 }

@@ -1,14 +1,19 @@
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 class Tester {
     public static void main(String... args) {
-        if (args.length > 0) {
-            Configuration.setYear(Integer.parseInt(args[0]));
+        List<LinkedList<Integer>> list = new ArrayList<>();
+
+        LinkedList<Integer> ele = new LinkedList<>();
+
+        for (int i = 0; i < 10; i++ ) {
+            list.add(ele);
         }
 
-        LectureAssignManager lam = new LectureAssignManager();
-        lam.run();
-
-        lam.runAssign();
-
-        lam.show();
+        for (LinkedList li : list) {
+            System.out.println(li);
+        }
     }
 }
