@@ -52,6 +52,8 @@ public class LectureAssignManager {
 
     public void runAssign() {
         for (Lecture lecture : lectures) {
+            AssignController.init();
+
             if (lecture instanceof LargeLecture) {
                 LargeLecture largeLecture = (LargeLecture) lecture;
                 assign(largeLecture);
@@ -64,15 +66,30 @@ public class LectureAssignManager {
     }
 
     private void assign(LargeLecture lecture) {
-        Office office = selectOffice(lecture);
+        while (true) {
+            try {
+                Office office = selectOffice(lecture);
 
-        // TODO: 割り振られている数が最も少ない月を単純に取ってきてしまうと
-        // TODO: 配置の問題で月に１講義しか入れられなかった月が必ず選択されてしまう不具合を修正する
-        Month month = select(getLeastAssignedMonth(office, lecture));
+                Month month = select(getLeastAssignedMonth(office, lecture));
 
-        assignLecture(office, month, lecture);
-        if (office.getOfficeName().equals("KAWASAKI"))
-        System.out.println(office + ": " + lecture + " : ASSIGN!!!");
+                assignLecture(office, month, lecture);
+                if (office.getOfficeName().equals("KAWASAKI"))
+                    System.out.println(office + ": " + lecture + " : ASSIGN!!!");
+                break;
+            }
+            catch (FailedToAssignException err) {
+                int errorCode = err.getErrorCode();
+
+                switch (errorCode) {
+                    case 1:
+                        System.err.println("ASSIGN FAILED: the assignable office does not exist.");
+                        return;
+                    case 2:
+                        System.err.println("ASSIGN FAILED: the assignable month does not exist.");
+                        break;
+                }
+            }
+        }
     }
 
     private void assign(SmallLecture lecture) {
@@ -86,9 +103,19 @@ public class LectureAssignManager {
 
     private Office selectOffice(Lecture lecture) {
         HashMap<Office, Integer> weight = lecture.getOfficeWeighting();
+        List<Office> assignables = AssignController.getOffices();
+
+        // アサイン可能なオフィスが存在しないのであればこれ以上アサインできない
+        if (assignables.size() == 0) {
+            throw new FailedToAssignException(1);
+        }
 
         List<Office> officeList = new ArrayList<>();
         for (Office office : weight.keySet()) {
+            if (!assignables.contains(office)) {
+                continue;
+            }
+
             int count = weight.get(office);
 
             for (int i = 0; i < count; i++ ) {
@@ -99,6 +126,7 @@ public class LectureAssignManager {
 
         return officeList.get(new Random().nextInt(officeList.size()));
     }
+
     private <E> E select(E[] array) {
         Random random = new Random();
         return array[random.nextInt(array.length)];
@@ -149,7 +177,8 @@ public class LectureAssignManager {
         }
         catch (IllegalArgumentException err) {
             System.err.println(office + ": " + assignableDays.size() + ", " + month);
-            throw new AssertionError();
+            AssignController.setStatus(month, Status.NG);
+            throw new FailedToAssignException(2);
         }
 
         // assignedDayにlectureを割り当てることのできる研修室を取得する
